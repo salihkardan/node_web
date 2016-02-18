@@ -1,0 +1,12 @@
+{
+	"WELCOME": "Welcome, {{username}}",
+	"THREAT_MAP": "Threat Map",
+	"OFFENSES": {
+		"SSH_FAILURE": "Top 10 SSH Failures"
+	},
+	"LOGIN": "Login to System",
+	"USERNAME": "Username",
+	"PASSWORD": "Password",
+	"REPEAT PASSWORD": "Repeat Password",
+	"EMAIL": "Email"
+}

@@ -1,0 +1,13 @@
+{
+	"WELCOME": "Hoşgeldiniz, {{username}}",
+	"THREAT_MAP": "Tehlike Haritası",
+	"OFFENSES": {
+		"SSH_FAILURE": "En çok 10 SSH Hatası"
+	},
+	"LOGIN": "Sisteme giriş Yap",
+	"USERNAME": "Kullanıcı adı",
+	"PASSWORD": "Parola",
+	"REPEAT PASSWORD": "Parola Tekrar",
+	"EMAIL": "E-Posta"
+
+}

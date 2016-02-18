@@ -1,0 +1,15 @@
+.container
+	.panel.panel-default
+		.panel-title Machines
+		.panel-body
+			table.table
+				tr
+					th Hostname
+					th IP
+					th Uptime
+					th Alerts
+				tr(ng-repeat="m in machines")
+					td {{ m.hostname }}
+					td {{ m.ip }}
+					td {{ m.uptime }}
+					td {{ m.incidents }}

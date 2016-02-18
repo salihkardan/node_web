@@ -1,0 +1,33 @@
+{
+  "name": "node_web",
+  "description": "Node.js package for HTTP basic and digest access authentication.",
+  "main": "express.js",
+  "authors": [
+    "Gevorg Harutyunyan (http://github.com/gevorg)"
+  ],
+  "license": "MIT",
+  "keywords": [
+    "node",
+    "http",
+    "server",
+    "basic",
+    "digest",
+    "access",
+    "authentication"
+  ],
+  "moduleType": [],
+  "homepage": "",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "angular": "^1.5.0",
+    "jade": "^1.11.0",
+    "stylus": "^0.53.0"
+  }
+}

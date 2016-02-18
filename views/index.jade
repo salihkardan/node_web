@@ -1,0 +1,76 @@
+html
+	head
+		title SIEM        
+		meta(http-equiv="Content-Type",content="text/html; charset=utf-8")
+
+		// Style files
+		link(rel="stylesheet",href="/css/theme.css")
+
+		// Font awesome for icons
+		link(rel="stylesheet",href="/vendor/font-awesome.css")
+
+		// The angular dependencies
+		script(src="/vendor/angular.js")
+
+		// Rickshaw - Time series Plots
+		link(href="/vendor/rickshaw/rickshaw.css",rel="stylesheet")
+		script(src="/vendor/d3.js")
+		script(src="/vendor/rickshaw/rickshaw.js")
+		script(src="/vendor/rickshaw/angular-rickshaw.js")
+
+		// Leaflet
+		script(src="/vendor/leaflet/angular-leaflet-directive.js")
+		script(src="/vendor/leaflet/leaflet.js")
+		link(rel="stylesheet",href="/vendor/leaflet/leaflet.css")
+
+		// UI Router
+		script(src="/vendor/angular-ui-router.js")
+
+		// UI Bootstrap
+		script(src="/vendor/angular-bootstrap/ui-bootstrap.js")
+		script(src="/vendor/angular-bootstrap/ui-bootstrap-tpls.js")
+
+		// Angular Sanitize
+		script(src="/vendor/angular-sanitize.js")
+		script(src="/vendor/angular-jwt.js")
+
+		// Translate
+		script(src="/vendor/angular-translate/angular-translate.js")
+		script(src="/vendor/angular-translate/angular-translate-loader-url.js")
+	
+		// Websocket
+		script(src="/vendor/angular-websocket.js")
+		
+		// alertify js
+		script(src="/vendor/alertifyjs/alertify.min.js")
+		link(href="/vendor/alertifyjs/css/alertify.min.css", rel="stylesheet")
+
+		// Application Entry point		
+		script(src="/js/main.js")
+
+		// Controllers, Directives: TODO: Seperate them
+		script(src="/js/controllers.js")
+        
+	body(ng-app="MyApp")
+		nav.navbar.navbar-inverse
+			.container
+				.navbar-header
+					a.navbar-brand(href="#") 
+						b SIEM
+				ul.nav.navbar-nav
+					li
+						a(href="#/login") 
+							i.fa.fa-cubes
+							b  Login       
+					li
+						a(href="#/machines") 
+							i.fa.fa-cubes
+							b  Machines
+
+				ul.nav.navbar-nav.navbar-right
+					li
+						a(href="#",ng-click="logout()")
+							i.fa.fa-sign-out
+							b  Logout
+
+		#content(ui-view="")
