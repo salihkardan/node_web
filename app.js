@@ -96,22 +96,10 @@ app.post('/api/login', function (req, res) {
 
 
 app.get('/api/containers', function (req, res) {
-    
-    res.setHeader('Content-Type', 'application/json')
-    
-    // var container = docker.getContainer('43bafdc0b5ca');
-    
+    res.setHeader('Content-Type', 'application/json');
     docker.listContainers(function (err, containers) {
         res.json(containers);
-        // containers.forEach(function (containerInfo) {
-        //     docker.getContainer(containerInfo.Id).stop(cb);
-        // });
     });
-
-    // query API for container info
-    // container.inspect(function (err, data) {
-    //     res.json(data);
-    // });
 });
 
 app.get("/partials/*", function(req, res) {
