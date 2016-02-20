@@ -22,9 +22,13 @@
     "url": "http://github.com/gevorg/http-auth/issues"
   },
   "dependencies": {
+    "express": "^3.3.8",
+    "express-jwt": "^3.3.0",
     "htpasswd": "2.2.0",
     "mysql": "^2.10.2",
-    "node-uuid": "1.4.1"
+    "njwt": "^0.2.3",
+    "node-uuid": "1.4.1",
+    "uuid": "^2.0.1"
   },
   "devDependencies": {
     "coffee-script": "1.8.0",
