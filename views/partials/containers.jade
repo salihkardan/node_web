@@ -1,0 +1,11 @@
+.container
+	.panel.panel-default
+		.panel-title Containers
+		.panel-body
+			table.table
+				tr
+					th Id
+					th Status
+				tr(ng-repeat="c in containers")
+					td {{ c.Id }}
+					td {{ c.Status }}

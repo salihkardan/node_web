@@ -22,6 +22,7 @@
     "url": "http://github.com/gevorg/http-auth/issues"
   },
   "dependencies": {
+    "dockerode": "^2.2.9",
     "express": "^3.3.8",
     "express-jwt": "^3.3.0",
     "htpasswd": "2.2.0",

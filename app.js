@@ -6,6 +6,10 @@ var express = require('express'),
     jwt = require('express-jwt'),
     uuid = require('uuid'),
     nJwt = require('njwt');
+    
+var Docker = require('dockerode');
+
+var docker = new Docker({socketPath: '/var/run/docker.sock'});
 
 var signingKey = uuid.v4(); // For example purposes
 
@@ -59,12 +63,12 @@ app.get('/', function (req, res) {
     res.render('index')
 })
 
-app.get('/protected',
-  jwt({secret: 'shhhhhhared-secret'}),
-  function(req, res) {
-    if (!req.user.admin) return res.sendStatus(401);
-    res.sendStatus(200);
-  });
+// app.get('/protected',
+//   jwt({secret: 'shhhhhhared-secret'}),
+//   function(req, res) {
+//     if (!req.user.admin) return res.sendStatus(401);
+//     res.sendStatus(200);
+//   });
   
 app.post('/api/login', function (req, res) {
     var email = req.body.email;
@@ -90,6 +94,25 @@ app.post('/api/login', function (req, res) {
     });
 });
 
+
+app.get('/api/containers', function (req, res) {
+    
+    res.setHeader('Content-Type', 'application/json')
+    
+    // var container = docker.getContainer('43bafdc0b5ca');
+    
+    docker.listContainers(function (err, containers) {
+        res.json(containers);
+        // containers.forEach(function (containerInfo) {
+        //     docker.getContainer(containerInfo.Id).stop(cb);
+        // });
+    });
+
+    // query API for container info
+    // container.inspect(function (err, data) {
+    //     res.json(data);
+    // });
+});
 
 app.get("/partials/*", function(req, res) {
 	// TODO: Directory traversal attack

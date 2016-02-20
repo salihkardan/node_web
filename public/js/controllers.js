@@ -17,6 +17,16 @@ app.controller("HelloController", function ($scope, $state) {
     console.log("helooooooooo");
 });
 
+app.controller("DockerController", function ($http, $scope, $rootScope, $state) {
+    $scope.containers = [];
+     if ($rootScope.token) {
+        $http.get("/api/containers").then(function success(resp) {
+            $scope.containers = resp.data;
+        });
+    } else {
+        $state.go("login");
+    }
+});
 
 app.controller("LoginController", function ($scope, $http, $rootScope, $state) {
     if ($rootScope.token) {

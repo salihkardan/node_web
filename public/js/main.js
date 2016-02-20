@@ -15,7 +15,12 @@ app.config(function($stateProvider, $httpProvider) {
 			url: "/hello",
 			templateUrl: "partials/hello.html",
 			controller: "HelloController",
-		})
+        })
+        .state('containers', {
+			url: "/containers",
+			templateUrl: "partials/containers.html",
+			controller: "DockerController",
+        })     
         .state('login', {
 			url: "/login",
 			templateUrl: "partials/login.html",
