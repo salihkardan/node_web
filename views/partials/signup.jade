@@ -11,22 +11,16 @@
 
                         label(for="email") {{ 'PASSWORD' }}
                         input.form-control(type="password",name="pw1",placeholder="Password",id="pw1",ng-model="pw1")
-                        
                          
-                        //label(for="email") {{ 'REPEAT PASSWORD' }} 
-                        //input.form-control(type="password",name="pw2",placeholder="Password",id="pw2",ng-model="pw2",  pw-check='pw1')
+                        label(for="email") {{ 'REPEAT PASSWORD' }} 
+                        input.form-control(type="password",name="pw2",placeholder="Password",id="pw2",ng-model="pw2",  pw-check='pw1')
                          
   
                         .msg-block(ng-show='myForm.$error')
                             span.msg-error(ng-show='myForm.pw2.$error.pwmatch' style='color:red') Passwords don't match.
                         br
-
-                        button.btn.btn-primary(ng-click="login()")
-                            i.fa.fa-sign-in
-                            span  Sign In
-
                         span &nbsp;
-
-                        a.btn.btn-success(href="#/signup")
+                        
+                        button.btn.btn-primary(ng-click="signup()")
                             i.fa.fa-pencil
                             span  Sign Up

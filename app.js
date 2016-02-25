@@ -15,7 +15,7 @@ var signingKey = uuid.v4(); // For example purposes
 
 var claims = {
   iss: "http://localhost/",  // The URL of your service
-  sub: "salih",    // The UID of the user in your system
+  sub: "salih",              // The UID of the user in your system
   scope: "self, admins"
 }
 
@@ -94,6 +94,29 @@ app.post('/api/login', function (req, res) {
     });
 });
 
+
+app.post('/api/signup', function (req, res) {
+    var email = req.body.email;
+    var pass = req.body.password;
+    var pass_check = req.body.password_check;
+   
+    res.setHeader('Content-Type', 'application/json');
+    if (pass != pass_check) {
+        res.status(400).send() 
+    }
+
+    var queryStr = 'insert into users(username, password) values(\"'+ email + '\", \"' + pass + '\")';
+    console.log(queryStr);
+    connection.query(queryStr, function (err, result, fields) {
+        if (err) {
+            throw err;
+        }
+        res.json({
+            success: true,
+            message: 'Signup successful!'
+        });    
+    });
+});
 
 app.get('/api/containers', function (req, res) {
     res.setHeader('Content-Type', 'application/json');

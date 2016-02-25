@@ -1,7 +1,7 @@
 var app = angular.module("MyApp", [
 	'ui.router',
 	'ui.bootstrap',
-	'angular-rickshaw'
+    'angular-rickshaw'
 ]);
 
 app.config(function($stateProvider, $httpProvider) {
@@ -20,7 +20,12 @@ app.config(function($stateProvider, $httpProvider) {
 			url: "/containers",
 			templateUrl: "partials/containers.html",
 			controller: "DockerController",
-        })     
+        })  
+        .state('signup', {
+			url: "/signup",
+			templateUrl: "partials/signup.html",
+			controller: "SignupController",
+        })    
         .state('login', {
 			url: "/login",
 			templateUrl: "partials/login.html",

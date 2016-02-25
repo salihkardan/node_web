@@ -28,6 +28,24 @@ app.controller("DockerController", function ($http, $scope, $rootScope, $state) 
     }
 });
 
+app.controller("SignupController", function ($scope, $http, $rootScope, $state) {
+    
+    $scope.signup = function() {
+        $http.post("/api/signup", {
+            email: $scope.email,
+            password: $scope.pw1,
+            password_check: $scope.pw2
+        }).then(function success(resp) {
+            console.log(resp.data.token);
+            $state.go("login");
+            $scope.error = false;
+        }, function error(resp) {
+            $state.go("signup");
+            $scope.error = true;
+        });
+    }
+});
+
 app.controller("LoginController", function ($scope, $http, $rootScope, $state) {
     if ($rootScope.token) {
         $state.go("machines");
@@ -35,8 +53,8 @@ app.controller("LoginController", function ($scope, $http, $rootScope, $state) {
         $scope.form = {};
         $scope.login = function() {
             $http.post("/api/login", {
-                email: $scope.form.email,
-                password: $scope.form.password
+                email: $scope.email,
+                password: $scope.pw1
             }).then(function success(resp) {
                 console.log(resp.data.token);
                 $rootScope.token = resp.data.token;
