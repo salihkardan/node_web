@@ -29,6 +29,7 @@
     "mysql": "^2.10.2",
     "njwt": "^0.2.3",
     "node-uuid": "1.4.1",
+    "sequelize": "^3.19.3",
     "uuid": "^2.0.1"
   },
   "devDependencies": {

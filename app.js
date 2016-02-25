@@ -2,14 +2,27 @@
 var express = require('express'),
     stylus = require('stylus'),
     nib = require('nib'),
-    mysql = require('mysql'),
     jwt = require('express-jwt'),
     uuid = require('uuid'),
-    nJwt = require('njwt');
+    nJwt = require('njwt'),
+    Docker = require('dockerode'),
+    Sequelize = require('sequelize');
     
-var Docker = require('dockerode');
+    
+var docker = new Docker({ socketPath: '/var/run/docker.sock' });
+var sequelize = new Sequelize('siem', 'root', 'root', {
+    host: "127.0.0.1",
+    dialect: 'mysql',
+    define: {
+        timestamps: false, // disables createdAt and some other extra fields
+    }
+});
 
-var docker = new Docker({socketPath: '/var/run/docker.sock'});
+// user model
+var User = sequelize.define('users', {
+    username: Sequelize.STRING,
+    password: Sequelize.STRING
+});
 
 var signingKey = uuid.v4(); // For example purposes
 
@@ -18,15 +31,6 @@ var claims = {
   sub: "salih",              // The UID of the user in your system
   scope: "self, admins"
 }
-
-var connection = mysql.createConnection({
-  host     : 'localhost',
-  user     : 'root',
-  password : 'root',
-  database : 'siem'
-});
-
-connection.connect();
 
 // Authentication module.
 var auth = require('http-auth');
@@ -74,24 +78,21 @@ app.post('/api/login', function (req, res) {
     var email = req.body.email;
     var pass = req.body.password;
     res.setHeader('Content-Type', 'application/json');
-    var queryStr = 'select * from users where username=\"' + email + '\" and password=\"' + pass + "\"";
-    console.log(queryStr);
-    var token = nJwt.create(claims,signingKey)
-    connection.query(queryStr, function (err, result, fields) {
-        if (err) {
-            throw err;
-        }
-        if (result.length > 0) {
+    var token = nJwt.create(claims, signingKey)
+    User.findOne({ where: { username: email, password: pass } }).then(function (user) {
+        if (user != null) {
             res.json({
                 success: true,
                 message: 'Enjoy your token!',
                 token: token
             });
+        } else {
+            res.status(400).json({
+                success: false,
+                message: 'Failed!'
+            });
         }
-        else {  
-            res.status(400).send() 
-        }     
-    });
+    })
 });
 
 
@@ -103,19 +104,22 @@ app.post('/api/signup', function (req, res) {
     res.setHeader('Content-Type', 'application/json');
     if (pass != pass_check) {
         res.status(400).send() 
+        return;
     }
-
-    var queryStr = 'insert into users(username, password) values(\"'+ email + '\", \"' + pass + '\")';
-    console.log(queryStr);
-    connection.query(queryStr, function (err, result, fields) {
-        if (err) {
-            throw err;
-        }
-        res.json({
+    
+    var user = User.build({ username: email, password: pass });
+    var ok = true;
+    user.save().catch(function (error) {
+        ok = false;
+        res.status(400).send();
+    })
+    
+    if (ok) {
+            res.json({
             success: true,
             message: 'Signup successful!'
-        });    
-    });
+        }); 
+    }
 });
 
 app.get('/api/containers', function (req, res) {
