@@ -21,6 +21,6 @@
                         br
                         span &nbsp;
                         
-                        button.btn.btn-primary(ng-click="signup()")
+                        button.btn.btn-primary(ng-disabled="myForm.pw2.$error.pwmatch", ng-click="signup()")
                             i.fa.fa-pencil
                             span  Sign Up
