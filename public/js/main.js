@@ -55,7 +55,7 @@ app.run(function($rootScope, $location, $state) {
         console.log("logout")
 		delete localStorage.token;
 		$rootScope.token = null;
-		$state.go("login");
+		// $state.go("login");
 	}
 
 	// $rootScope.$on('$stateChangeStart',

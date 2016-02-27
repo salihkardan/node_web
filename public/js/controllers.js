@@ -41,7 +41,10 @@ app.controller("DockerController", function ($http, $scope, $rootScope, $state) 
             $scope.containers = resp.data;
             $scope.error = false;
         }, function error(resp) {
-            $scope.error = true;
+            delete localStorage.token;
+            $rootScope.token = null;
+            $state.go("login");
+            $scope.errorMessage = true;
         });
     } else {
         $state.go("login");
@@ -57,7 +60,6 @@ app.controller("SignupController", function ($scope, $http, $rootScope, $state) 
             password_check: $scope.pw2
         }).then(function success(resp) {
             console.log(resp.data.token);
-            $state.go("login");
             $scope.error = false;
         }, function error(resp) {
             $state.go("signup");
