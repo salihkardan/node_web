@@ -40,13 +40,12 @@ app.config(function($stateProvider, $httpProvider) {
 
 
 app.run(function($rootScope, $location, $state) {
-	// Check if logged in
+    $state.go("login");
 	if ( localStorage.token ){
 		$rootScope.token = localStorage.token;
 	}
 
 	$rootScope.logout = function() {
-		// TODO: Remove Token
         console.log("logout")
 		delete localStorage.token;
 		$rootScope.token = null;

@@ -10,7 +10,9 @@ var express = require('express'),
     jwt = require('jsonwebtoken'),
     bodyParser  = require('body-parser'),
     config = require('./config');
+    
 
+var WebSocketServer = require('websocket').server;
 var docker = new Docker({ socketPath: '/var/run/docker.sock' });
 var sequelize = new Sequelize(config.database, config.username, config.password, {
     host: "127.0.0.1",
@@ -66,63 +68,21 @@ app.get('/', function (req, res) {
     res.render('index')
 })
 
-// ---------------------------------------------------------
-// get an instance of the router for api routes
-// ---------------------------------------------------------
-var apiRoutes = express.Router(); 
-
-apiRoutes.get('/api/containers', function (req, res) {
-    
-    console.log( "heyyyy");
-    res.setHeader('Content-Type', 'application/json');
-    docker.listContainers(function (err, containers) {
-        res.json(containers);
-    });
-});
-
-// ---------------------------------------------------------
-// route middleware to authenticate and check token
-// ---------------------------------------------------------
-apiRoutes.use(function(req, res, next) {
-
-	// check header or url parameters or post parameters for token
-	var token = req.body.token || req.param('token') || req.headers['x-access-token'];
-
-	// decode token
-	if (token) {
-
-		// verifies secret and checks exp
-		jwt.verify(token, app.get('superSecret'), function(err, decoded) {			
-			if (err) {
-				return res.json({ success: false, message: 'Failed to authenticate token.' });		
-			} else {
-				// if everything is good, save to request for use in other routes
-				req.decoded = decoded;	
-				next();
-			}
-		});
-
-	} else {
-
-		// if there is no token
-		// return an error
-		return res.status(403).send({ 
-			success: false, 
-			message: 'No token provided.'
-		});
-		
-	}
-	
-});
-  
 app.post('/api/login', function (req, res) {
     var email = req.body.email;
     var pass = req.body.password;
-    res.setHeader('Content-Type', 'application/json');
+    // res.setHeader('Content-Type', 'application/json');
             
     User.findOne({ where: { username: email, password: pass } }).then(function (user) {
         if (user != null) {
-            var token = jwt.sign({ foo: 'bar' }, 'shhhhh');
+            // var token = jwt.sign({ foo: 'bar' }, 'shhhhh');
+            // if user is found and password is right
+            // create a token
+
+            var token = jwt.sign(email, app.get('superSecret'), {
+					expiresInMinutes: 1440 // expires in 24 hours
+            });
+                
             res.json({
                 success: true,
                 message: 'Enjoy your token!',
@@ -171,7 +131,70 @@ app.get("/partials/*", function(req, res) {
 	res.render("partials/" + template);
 });
 
+// ---------------------------------------------------------
+// get an instance of the router for api routes
+// ---------------------------------------------------------
+var apiRoutes = express.Router(); 
+
+// ---------------------------------------------------------
+// route middleware to authenticate and check token
+// ---------------------------------------------------------
+apiRoutes.use(function(req, res, next) {
+	// check header or url parameters or post parameters for token
+    var token = req.body.token || req.param('token') || req.headers['x-access-token'];
+	
+    // decode token
+	if (token) {
+		// verifies secret and checks exp
+		jwt.verify(token, app.get('superSecret'), function(err, decoded) {			
+			if (err) {
+				return res.json({ success: false, message: 'Failed to authenticate token.' });		
+			} else {
+				// if everything is good, save to request for use in other routes
+				req.decoded = decoded;	
+				next();
+			}
+		});
+	} else {
+		// if there is no token
+		// return an error
+		return res.status(403).send({ 
+			success: false, 
+			message: 'No token provided.'
+		});	
+	}	
+});
+
+apiRoutes.get('/containers', function (req, res) {
+    res.setHeader('Content-Type', 'application/json');
+    docker.listContainers(function (err, containers) {
+        res.json(containers);
+    });
+});
+
 app.use('/api', apiRoutes);
 
 app.listen(8080);
 console.log('Server running at http://localhost:' + 8080);
+
+// // create the server
+// var wsServer = new WebSocketServer({
+//     httpServer: app
+// });
+
+// // WebSocket server
+// wsServer.on('request', function(request) {
+//     var connection = request.accept(null, request.origin);
+
+//     // This is the most important callback for us, we'll handle
+//     // all messages from users here.
+//     connection.on('message', function(message) {
+//         if (message.type === 'utf8') {
+//             // process WebSocket message
+//         }
+//     });
+
+//     connection.on('close', function(connection) {
+//         // close user connection
+//     });
+// });

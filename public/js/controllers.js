@@ -20,8 +20,15 @@ app.controller("HelloController", function ($scope, $state) {
 app.controller("DockerController", function ($http, $scope, $rootScope, $state) {
     $scope.containers = [];
     if ($rootScope.token) {
-        $http.get("/api/containers").then(function success(resp) {
+        $http.get("/api/containers", {
+            headers: {
+                "x-access-token": $rootScope.token
+            }
+        }).then(function success(resp) {
             $scope.containers = resp.data;
+            $scope.error = false;
+        }, function error(resp) {
+            $scope.error = true;
         });
     } else {
         $state.go("login");
@@ -56,7 +63,6 @@ app.controller("LoginController", function ($scope, $http, $rootScope, $state) {
                 email: $scope.email,
                 password: $scope.pw1
             }).then(function success(resp) {
-                console.log(resp.data.token);
                 $rootScope.token = resp.data.token;
                 localStorage.token = resp.data.token;
                 $state.go("machines");
