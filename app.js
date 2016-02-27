@@ -9,9 +9,11 @@ var express = require('express'),
     morgan = require('morgan'),
     jwt = require('jsonwebtoken'),
     bodyParser  = require('body-parser'),
-    config = require('./config');
+    config = require('./config'),
+    randomstring = require("randomstring"),
+    sleep = require('sleep');
     
-
+ 
 var WebSocketServer = require('websocket').server;
 var docker = new Docker({ socketPath: '/var/run/docker.sock' });
 var sequelize = new Sequelize(config.database, config.username, config.password, {
@@ -27,6 +29,7 @@ var User = sequelize.define('users', {
     username: Sequelize.STRING,
     password: Sequelize.STRING
 });
+
 
 // // Authentication module.
 // var auth = require('http-auth');
@@ -44,7 +47,7 @@ function compile(str, path) {
 
 // Application setup.
 var app = express();
-// app.use(auth.connect(basic));
+var expressWs = require('express-ws')(app);
 
 app.set('views', __dirname + '/views')
 app.set('view engine', 'jade')
@@ -131,6 +134,16 @@ app.get("/partials/*", function(req, res) {
 	res.render("partials/" + template);
 });
 
+
+app.ws('/echo', function(ws, req) {
+    ws.on('message', function (msg) {
+        for (var index = 0; index < 20 ; index++) {
+            var mymsg = { time: new Date().toISOString(), message: randomstring.generate() };
+            ws.send(JSON.stringify(mymsg));
+        }
+    });
+});
+
 // ---------------------------------------------------------
 // get an instance of the router for api routes
 // ---------------------------------------------------------
@@ -176,25 +189,3 @@ app.use('/api', apiRoutes);
 
 app.listen(8080);
 console.log('Server running at http://localhost:' + 8080);
-
-// // create the server
-// var wsServer = new WebSocketServer({
-//     httpServer: app
-// });
-
-// // WebSocket server
-// wsServer.on('request', function(request) {
-//     var connection = request.accept(null, request.origin);
-
-//     // This is the most important callback for us, we'll handle
-//     // all messages from users here.
-//     connection.on('message', function(message) {
-//         if (message.type === 'utf8') {
-//             // process WebSocket message
-//         }
-//     });
-
-//     connection.on('close', function(connection) {
-//         // close user connection
-//     });
-// });

@@ -17,6 +17,19 @@ app.controller("HelloController", function ($scope, $state) {
     console.log("helooooooooo");
 });
 
+
+app.controller("WSController", function ($http, $scope, $rootScope, $state, $websocket) {
+    $scope.messages = [];
+    var dataStream = $websocket('ws://localhost:8080/echo');
+    dataStream.send('ping');  // send a message to the websocket server
+    dataStream.onMessage(function (message) {
+        console.log( message.data )
+        $scope.messages.unshift(JSON.parse(message.data));
+		if ($scope.messages.length > 15)
+            $scope.messages = $scope.messages.slice(0, 15);
+	});
+});
+
 app.controller("DockerController", function ($http, $scope, $rootScope, $state) {
     $scope.containers = [];
     if ($rootScope.token) {

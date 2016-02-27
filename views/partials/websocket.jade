@@ -1,0 +1,11 @@
+.container
+	.panel.panel-default
+		.panel-title Messages
+		.panel-body
+			table.table
+				tr
+					th Time
+					th Message
+				tr(ng-repeat="m in messages")
+					td {{ m.time }}
+					td {{ m.message }}

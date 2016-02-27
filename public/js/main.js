@@ -1,7 +1,8 @@
 var app = angular.module("MyApp", [
 	'ui.router',
 	'ui.bootstrap',
-    'angular-rickshaw'
+    'angular-rickshaw',
+    'ngWebSocket'
 ]);
 
 app.config(function($stateProvider, $httpProvider) {
@@ -10,6 +11,11 @@ app.config(function($stateProvider, $httpProvider) {
 			url: "/machines",
 			templateUrl: "partials/machines.html",
 			controller: "MachinesController",
+        })
+        .state('ws', {
+			url: "/ws",
+			templateUrl: "partials/websocket.html",
+			controller: "WSController",
         })
         .state('hello', {
 			url: "/hello",
