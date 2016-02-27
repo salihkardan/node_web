@@ -19,7 +19,7 @@ app.controller("HelloController", function ($scope, $state) {
 
 app.controller("DockerController", function ($http, $scope, $rootScope, $state) {
     $scope.containers = [];
-     if ($rootScope.token) {
+    if ($rootScope.token) {
         $http.get("/api/containers").then(function success(resp) {
             $scope.containers = resp.data;
         });

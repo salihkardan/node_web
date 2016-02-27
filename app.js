@@ -2,15 +2,17 @@
 var express = require('express'),
     stylus = require('stylus'),
     nib = require('nib'),
-    jwt = require('express-jwt'),
     uuid = require('uuid'),
-    nJwt = require('njwt'),
     Docker = require('dockerode'),
-    Sequelize = require('sequelize');
-    
-    
+    Sequelize = require('sequelize'),
+    redis = require("redis"),
+    morgan = require('morgan'),
+    jwt = require('jsonwebtoken'),
+    bodyParser  = require('body-parser'),
+    config = require('./config');
+
 var docker = new Docker({ socketPath: '/var/run/docker.sock' });
-var sequelize = new Sequelize('siem', 'root', 'root', {
+var sequelize = new Sequelize(config.database, config.username, config.password, {
     host: "127.0.0.1",
     dialect: 'mysql',
     define: {
@@ -24,20 +26,12 @@ var User = sequelize.define('users', {
     password: Sequelize.STRING
 });
 
-var signingKey = uuid.v4(); // For example purposes
-
-var claims = {
-  iss: "http://localhost/",  // The URL of your service
-  sub: "salih",              // The UID of the user in your system
-  scope: "self, admins"
-}
-
-// Authentication module.
-var auth = require('http-auth');
-var basic = auth.basic({
-	realm: "Simon Area.",
-	file: "pass.txt"
-});
+// // Authentication module.
+// var auth = require('http-auth');
+// var basic = auth.basic({
+// 	realm: "Simon Area.",
+// 	file: "pass.txt"
+// });
 
 function compile(str, path) {
   return stylus(str)
@@ -48,12 +42,18 @@ function compile(str, path) {
 
 // Application setup.
 var app = express();
-app.use(auth.connect(basic));
+// app.use(auth.connect(basic));
 
 app.set('views', __dirname + '/views')
 app.set('view engine', 'jade')
-app.use(express.bodyParser());
-app.use(express.logger('dev'))  
+
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
+
+// app.use(express.bodyParser());
+// app.use(express.logger('dev')) 
+app.use(morgan('dev')); 
+app.set('superSecret', config.secret)
 app.use(stylus.middleware(
     { 
         src: __dirname + '/public',
@@ -62,25 +62,67 @@ app.use(stylus.middleware(
 ))
 app.use(express.static(__dirname + '/public'))
 
-// Setup route.
 app.get('/', function (req, res) {
     res.render('index')
 })
 
-// app.get('/protected',
-//   jwt({secret: 'shhhhhhared-secret'}),
-//   function(req, res) {
-//     if (!req.user.admin) return res.sendStatus(401);
-//     res.sendStatus(200);
-//   });
+// ---------------------------------------------------------
+// get an instance of the router for api routes
+// ---------------------------------------------------------
+var apiRoutes = express.Router(); 
+
+apiRoutes.get('/api/containers', function (req, res) {
+    
+    console.log( "heyyyy");
+    res.setHeader('Content-Type', 'application/json');
+    docker.listContainers(function (err, containers) {
+        res.json(containers);
+    });
+});
+
+// ---------------------------------------------------------
+// route middleware to authenticate and check token
+// ---------------------------------------------------------
+apiRoutes.use(function(req, res, next) {
+
+	// check header or url parameters or post parameters for token
+	var token = req.body.token || req.param('token') || req.headers['x-access-token'];
+
+	// decode token
+	if (token) {
+
+		// verifies secret and checks exp
+		jwt.verify(token, app.get('superSecret'), function(err, decoded) {			
+			if (err) {
+				return res.json({ success: false, message: 'Failed to authenticate token.' });		
+			} else {
+				// if everything is good, save to request for use in other routes
+				req.decoded = decoded;	
+				next();
+			}
+		});
+
+	} else {
+
+		// if there is no token
+		// return an error
+		return res.status(403).send({ 
+			success: false, 
+			message: 'No token provided.'
+		});
+		
+	}
+	
+});
   
 app.post('/api/login', function (req, res) {
     var email = req.body.email;
     var pass = req.body.password;
     res.setHeader('Content-Type', 'application/json');
-    var token = nJwt.create(claims, signingKey)
+            
     User.findOne({ where: { username: email, password: pass } }).then(function (user) {
         if (user != null) {
+            var token = jwt.sign({ foo: 'bar' }, 'shhhhh');
             res.json({
                 success: true,
                 message: 'Enjoy your token!',
@@ -122,12 +164,6 @@ app.post('/api/signup', function (req, res) {
     }
 });
 
-app.get('/api/containers', function (req, res) {
-    res.setHeader('Content-Type', 'application/json');
-    docker.listContainers(function (err, containers) {
-        res.json(containers);
-    });
-});
 
 app.get("/partials/*", function(req, res) {
 	// TODO: Directory traversal attack
@@ -135,9 +171,7 @@ app.get("/partials/*", function(req, res) {
 	res.render("partials/" + template);
 });
 
+app.use('/api', apiRoutes);
 
-// Start server.
 app.listen(8080);
-
-// Log URL.
-console.log("Server running at http://127.0.0.1:8080/");
+console.log('Server running at http://localhost:' + 8080);
