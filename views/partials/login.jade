@@ -47,5 +47,6 @@
                                     span.msg-error(ng-show='myForm.pw2.$error.pwmatch' style='color:red') Passwords don't match.
                                     
                           .modal-footer
-                              button.btn.btn-primary(type='button', ng-click='ok()') Signup
+                              button.btn.btn-primary(ng-disabled="myForm.pw2.$error.pwmatch" type='button', ng-click='ok()') Signup
                               button.btn.btn-warning(type='button', ng-click='cancel()') Cancel
+                              

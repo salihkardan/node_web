@@ -6,6 +6,16 @@
 				tr
 					th Id
 					th Status
+					th Info
 				tr(ng-repeat="c in containers")
 					td {{ c.Id }}
 					td {{ c.Status }}
+					td 
+						button.btn.btn-info.btn-sm(type='button', ng-click='open(c.Id)') Info
+						script(type="text/ng-template" id="myModalContent.html")
+							.modal-header
+									h3.modal-title Container Details
+							.modal-body
+									textarea.form-control(ng-model="fillHere" rows="15")
+							.modal-footer
+									button.btn.btn-warning(type='button', ng-click='cancel()') Close

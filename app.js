@@ -180,6 +180,12 @@ apiRoutes.get('/containers', function (req, res) {
     });
 });
 
+apiRoutes.get('/container', function (req, res) {
+    var containerID = req.header('containerID');
+    var container = docker.getContainer(containerID);
+    res.json(container);
+});
+
 app.use('/api', apiRoutes);
 
 app.listen(8080);

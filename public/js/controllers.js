@@ -30,7 +30,7 @@ app.controller("WSController", function ($http, $scope, $rootScope, $state, $web
 	});
 });
 
-app.controller("DockerController", function ($http, $scope, $rootScope, $state) {
+app.controller("DockerController", function ($http, $scope, $uibModal, $log, $rootScope, $state) {
     $scope.containers = [];
     if ($rootScope.token) {
         $http.get("/api/containers", {
@@ -46,6 +46,29 @@ app.controller("DockerController", function ($http, $scope, $rootScope, $state) 
             $state.go("login");
             $scope.errorMessage = true;
         });
+        $scope.animationsEnabled = true;
+        $scope.container;
+        $scope.open = function (Id) {
+          for (var i = 0; i < $scope.containers.length; i++) {
+            if ( $scope.containers[i].Id == Id ){
+              $scope.container = $scope.containers[i];
+            }
+          }
+          $scope.fillHere = $scope.container;
+          var modalInstance = $uibModal.open({
+            animation: $scope.animationsEnabled,
+            templateUrl: 'myModalContent.html',
+            controller: 'MyCtrl',
+            resolve: {
+                titleText: function() {return $scope.container; },
+            }
+          });
+
+          modalInstance.result.then(function (result) {}, function () {
+            $log.info('Modal dismissed at: ' + new Date());
+          });
+        };
+
     } else {
         $state.go("login");
     }
@@ -109,8 +132,18 @@ app.controller("LoginController", function ($scope, $http, $uibModal, $rootScope
 app.controller('ModalInstanceCtrl', function ($scope, $uibModalInstance) {
 
   $scope.ok = function () {
-    console.log("salih")
     $uibModalInstance.close({'email':$scope.email, 'password':$scope.pw1, 'password_check': $scope.pw2});
+  };
+
+  $scope.cancel = function () {
+    $uibModalInstance.dismiss('cancel');
+  };
+});
+
+app.controller('MyCtrl', function ($scope, $uibModalInstance, titleText) {
+  $scope.fillHere = JSON.stringify(titleText, undefined, 2);
+  $scope.ok = function () {
+    $uibModalInstance.close();
   };
 
   $scope.cancel = function () {
