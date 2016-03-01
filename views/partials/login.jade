@@ -23,7 +23,29 @@
                             span  Sign In
 
                         span &nbsp;
-
-                        a.btn.btn-success(href="#/signup")
+                        
+                        a.btn.btn-success(ng-click="open()")
                             i.fa.fa-pencil
                             span  Sign Up
+                            
+                        script(type="text/ng-template" id="myModalContent.html")
+                          .modal-header
+                                h3.modal-title Signup
+                          .modal-body
+                            form(name='myForm')
+
+                                label(for="email") {{ 'EMAIL' }}
+                                input.form-control(type="text",name="email",placeholder="john@gmail.com",id="email",ng-model="email")
+
+                                label(for="pw1") {{ 'PASSWORD' }}
+                                input.form-control(type="password",name="pw1",placeholder="Password",id="pw1",ng-model="pw1")
+                                 
+                                label(for="pw2") {{ 'REPEAT PASSWORD' }} 
+                                input.form-control(type="password",name="pw2",placeholder="Password",id="pw2",ng-model="pw2",  pw-check='pw1')
+                              
+                                .msg-block(ng-show='myForm.$error')
+                                    span.msg-error(ng-show='myForm.pw2.$error.pwmatch' style='color:red') Passwords don't match.
+                                    
+                          .modal-footer
+                              button.btn.btn-primary(type='button', ng-click='ok()') Signup
+                              button.btn.btn-warning(type='button', ng-click='cancel()') Cancel

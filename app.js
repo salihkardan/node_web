@@ -12,8 +12,8 @@ var express = require('express'),
     config = require('./config'),
     randomstring = require("randomstring"),
     sleep = require('sleep');
-    
- 
+
+
 var WebSocketServer = require('websocket').server;
 var docker = new Docker({ socketPath: '/var/run/docker.sock' });
 var sequelize = new Sequelize(config.database, config.username, config.password, {
@@ -56,11 +56,11 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
 // app.use(express.bodyParser());
-// app.use(express.logger('dev')) 
-app.use(morgan('dev')); 
+// app.use(express.logger('dev'))
+app.use(morgan('dev'));
 app.set('superSecret', config.secret)
 app.use(stylus.middleware(
-    { 
+    {
         src: __dirname + '/public',
         compile: compile
     }
@@ -75,9 +75,9 @@ app.post('/api/login', function (req, res) {
     var email = req.body.email;
     var pass = req.body.password;
     // res.setHeader('Content-Type', 'application/json');
-            
+
     User.findOne({ where: { username: email, password: pass } }).then(function (user) {
-        if (user != null) { 
+        if (user != null) {
             var token = jwt.sign({user: email}, app.get('superSecret'), { expiresIn: 360 });
             res.json({
                 success: true,
@@ -98,25 +98,25 @@ app.post('/api/signup', function (req, res) {
     var email = req.body.email;
     var pass = req.body.password;
     var pass_check = req.body.password_check;
-   
+
     res.setHeader('Content-Type', 'application/json');
     if (pass != pass_check) {
-        res.status(400).send() 
+        res.status(400).send()
         return;
     }
-    
+
     var user = User.build({ username: email, password: pass });
     var ok = true;
     user.save().catch(function (error) {
         ok = false;
         res.status(400).send();
     })
-    
+
     if (ok) {
             res.json({
             success: true,
             message: 'Signup successful!'
-        }); 
+        });
     }
 });
 
@@ -140,7 +140,7 @@ app.ws('/echo', function(ws, req) {
 // ---------------------------------------------------------
 // get an instance of the router for api routes
 // ---------------------------------------------------------
-var apiRoutes = express.Router(); 
+var apiRoutes = express.Router();
 
 // ---------------------------------------------------------
 // route middleware to authenticate and check token
@@ -148,29 +148,29 @@ var apiRoutes = express.Router();
 apiRoutes.use(function(req, res, next) {
 	// check header or url parameters or post parameters for token
     var token = req.body.token || req.param('token') || req.headers['x-access-token'];
-    
+
     // decode token
 	if (token) {
 		// verifies secret and checks exp
-		jwt.verify(token, app.get('superSecret'), function(err, decoded) {			
+		jwt.verify(token, app.get('superSecret'), function(err, decoded) {
             if (err) {
                 return res.status(400).json({ success: false, message: 'Failed to authenticate token.' });
-				// return res.status(400).json({ success: false, message: 'Failed to authenticate token.' });		
+				// return res.status(400).json({ success: false, message: 'Failed to authenticate token.' });
 			} else {
 				// if everything is good, save to request for use in other routes
-                req.decoded = decoded;	
-                console.log("decoded: " + decoded.exp); 
+                req.decoded = decoded;
+                console.log("decoded: " + decoded.exp);
 				next();
 			}
 		});
 	} else {
 		// if there is no token
 		// return an error
-		return res.status(403).send({ 
-			success: false, 
+		return res.status(403).send({
+			success: false,
 			message: 'No token provided.'
-		});	
-	}	
+		});
+	}
 });
 
 apiRoutes.get('/containers', function (req, res) {

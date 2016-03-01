@@ -1,8 +1,8 @@
 var app = angular.module("MyApp", [
 	'ui.router',
 	'ui.bootstrap',
-    'angular-rickshaw',
-    'ngWebSocket'
+  'angular-rickshaw',
+  'ngWebSocket'
 ]);
 
 app.config(function($stateProvider, $httpProvider) {
@@ -11,33 +11,33 @@ app.config(function($stateProvider, $httpProvider) {
 			url: "/machines",
 			templateUrl: "partials/machines.html",
 			controller: "MachinesController",
-        })
-        .state('ws', {
+    })
+    .state('ws', {
 			url: "/ws",
 			templateUrl: "partials/websocket.html",
 			controller: "WSController",
-        })
-        .state('hello', {
+    })
+    .state('hello', {
 			url: "/hello",
 			templateUrl: "partials/hello.html",
 			controller: "HelloController",
-        })
-        .state('containers', {
+    })
+    .state('containers', {
 			url: "/containers",
 			templateUrl: "partials/containers.html",
 			controller: "DockerController",
-        })  
-        .state('signup', {
+    })
+    .state('signup', {
 			url: "/signup",
 			templateUrl: "partials/signup.html",
 			controller: "SignupController",
-        })    
-        .state('login', {
+    })
+    .state('login', {
 			url: "/login",
 			templateUrl: "partials/login.html",
 			controller: "LoginController",
 		})
-        
+
     //Enable cross domain calls
     $httpProvider.defaults.useXDomain = true;
     //Remove the header used to identify ajax call  that would prevent CORS from working
@@ -52,10 +52,10 @@ app.run(function($rootScope, $location, $state) {
 	}
 
 	$rootScope.logout = function() {
-        console.log("logout")
+    console.log("logout")
 		delete localStorage.token;
 		$rootScope.token = null;
-		// $state.go("login");
+		$state.go("login");
 	}
 
 	// $rootScope.$on('$stateChangeStart',

@@ -1,6 +1,6 @@
 var app = angular.module("MyApp");
 
-app.controller("MachinesController", function ($scope, $state, $rootScope) {  
+app.controller("MachinesController", function ($scope, $state, $rootScope) {
     if ($rootScope.token) {
         $scope.machines = [{
             hostname: "demo-server1",
@@ -51,24 +51,7 @@ app.controller("DockerController", function ($http, $scope, $rootScope, $state) 
     }
 });
 
-app.controller("SignupController", function ($scope, $http, $rootScope, $state) {
-    
-    $scope.signup = function() {
-        $http.post("/api/signup", {
-            email: $scope.email,
-            password: $scope.pw1,
-            password_check: $scope.pw2
-        }).then(function success(resp) {
-            console.log(resp.data.token);
-            $scope.error = false;
-        }, function error(resp) {
-            $state.go("signup");
-            $scope.error = true;
-        });
-    }
-});
-
-app.controller("LoginController", function ($scope, $http, $rootScope, $state) {
+app.controller("LoginController", function ($scope, $http, $uibModal, $rootScope, $state, $log) {
     if ($rootScope.token) {
         $state.go("machines");
     } else {
@@ -87,7 +70,50 @@ app.controller("LoginController", function ($scope, $http, $rootScope, $state) {
                 $scope.error = true;
             });
         }
-    }    
+
+        $scope.animationsEnabled = true;
+
+        $scope.open = function (size) {
+          var modalInstance = $uibModal.open({
+            animation: $scope.animationsEnabled,
+            templateUrl: 'myModalContent.html',
+            controller: 'ModalInstanceCtrl',
+            resolve: {
+              email: function () { return $scope.email; },
+              password: function () { return $scope.pw1; },
+              password_check: function () { return $scope.pw2; }
+            }
+          });
+
+          modalInstance.result.then(function (result) {
+            $http.post("/api/signup", {
+                email: result.email,
+                password: result.password,
+                password_check: result.password_check
+            }).then(function success(resp) {
+                $state.go("login");
+                $scope.error = false;
+            }, function error(resp) {
+                $state.go("login");
+                $scope.error = true;
+            });
+
+          }, function () {
+            $log.info('Modal dismissed at: ' + new Date());
+          });
+        };
+
+    }
 });
 
+app.controller('ModalInstanceCtrl', function ($scope, $uibModalInstance) {
 
+  $scope.ok = function () {
+    console.log("salih")
+    $uibModalInstance.close({'email':$scope.email, 'password':$scope.pw1, 'password_check': $scope.pw2});
+  };
+
+  $scope.cancel = function () {
+    $uibModalInstance.dismiss('cancel');
+  };
+});
