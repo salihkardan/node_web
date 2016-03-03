@@ -41,7 +41,7 @@
                                 input.form-control(type="password",name="pw1",placeholder="Password",id="pw1",ng-model="pw1")
                                  
                                 label(for="pw2") {{ 'REPEAT PASSWORD' }} 
-                                input.form-control(type="password",name="pw2",placeholder="Password",id="pw2",ng-model="pw2",  pw-check='pw1')
+                                sudo
                               
                                 .msg-block(ng-show='myForm.$error')
                                     span.msg-error(ng-show='myForm.pw2.$error.pwmatch' style='color:red') Passwords don't match.

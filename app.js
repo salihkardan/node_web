@@ -13,9 +13,11 @@ var express = require('express'),
     randomstring = require("randomstring"),
     sleep = require('sleep');
 
-
+var WebSocket = require('ws');
 var WebSocketServer = require('websocket').server;
-var docker = new Docker({ socketPath: '/var/run/docker.sock' });
+
+
+
 var sequelize = new Sequelize(config.database, config.username, config.password, {
     host: "127.0.0.1",
     dialect: 'mysql',
@@ -23,6 +25,50 @@ var sequelize = new Sequelize(config.database, config.username, config.password,
         timestamps: false, // disables createdAt and some other extra fields
     }
 });
+
+
+var opts = {
+    "AttachStdin": true,
+    "AttachStdout": true,
+    "AttachStderr": true,
+    "Tty": true,
+    "OpenStdin": true,
+    "Cmd": [
+        "/bin/bash"
+    ],
+    "Image": "ubuntu"
+};
+
+var docker = new Docker( {
+    host: '127.0.0.1',
+    port: process.env.DOCKER_PORT || 2375,
+    socketPath: false
+    // socketPath: '/var/run/docker.sock'
+});
+
+docker.createContainer(opts, function (err, container) {
+  console.log(container)
+  var containerId = container.id;
+  container.start(function (err, result) {
+    var url = "ws://localhost:2375/v1.22/containers/" + containerId + "/attach/ws?logs=1&stdin=1&stderr=1&stdout=1&stream=1";
+    var ws = new WebSocket(url);
+    ws.on("open", function() {
+        ws.send('ls');
+        console.log("ok, open");
+    });
+
+    ws.on("message", function(msg) {
+        console.log("msg", msg);
+        ws.send("apt-get update");
+    });
+
+    ws.on("error", function(msg) {
+        console.log("error", msg);
+    });
+  });
+});
+
+
 
 // user model
 var User = sequelize.define('users', {

@@ -42,7 +42,8 @@
     "sleep": "^3.0.1",
     "stylus": "^0.53.0",
     "uuid": "^2.0.1",
-    "websocket": "^1.0.22"
+    "websocket": "^1.0.22",
+    "ws": "^1.0.1"
   },
   "devDependencies": {
     "coffee-script": "1.8.0",
