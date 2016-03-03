@@ -1,11 +1,13 @@
 .container
 	.panel.panel-default
-		.panel-title Messages
+		.panel-title Docker with Websocket
 		.panel-body
-			table.table
-				tr
-					th Time
-					th Message
-				tr(ng-repeat="m in messages")
-					td {{ m.time }}
-					td {{ m.message }}
+				.div(class="col-sm-12")
+					label(for="command") {{ 'COMMAND' }}
+					input.form-control(name="command",placeholder="Command", id="command",ng-model="command")
+					br
+					textarea.form-control(name="output", ng-model="output", rows="10" )
+					br
+					button.btn.btn-primary.pull-right(ng-click="sendCommand()")
+							i.fa.fa-sign-in
+							span  Send

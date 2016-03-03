@@ -19,16 +19,68 @@ app.controller("HelloController", function ($scope, $state) {
 
 
 app.controller("WSController", function ($http, $scope, $rootScope, $state, $websocket) {
-    $scope.messages = [];
-    var dataStream = $websocket('ws://localhost:8080/echo');
-    dataStream.send('ping');  // send a message to the websocket server
-    dataStream.onMessage(function (message) {
-        console.log( message.data )
-        $scope.messages.unshift(JSON.parse(message.data));
-		if ($scope.messages.length > 15)
-            $scope.messages = $scope.messages.slice(0, 15);
-	});
+    var containerId = "dc1de059f524a919b12546af55e6df3b88dd95ca4d19cf79810837288b287b0d"
+    var url = "ws://localhost:2375/v1.22/containers/" + containerId + "/attach/ws?logs=1&stdin=1&stderr=1&stdout=1&stream=1";
+
+
+    ws://localhost:2375/v1.22/containers/" + containerId + "/attach/ws?logs=1&stdin=1&stderr=1&stdout=1&stream=1
+    console.log(url)
+    var ws = $websocket(url);
+
+    ws.onOpen( function(){
+      console.log("opened")
+    });
+
+    $scope.command = "ls "
+
+    $scope.sendCommand = function() {
+      var command = $scope.command + "\n";
+
+      var bytes = [];
+      for(var i = 0; i < command.length; i++) {
+          var char = command.charCodeAt(i);
+          bytes.push(char >>> 8);
+          bytes.push(char & 0xFF);
+      }
+      console.log( "sending " + command );
+      ws.send(command)
+      // ws.send(bytes);
+
+      setTimeout(function(){
+          //do what you need here
+      }, 2000);
+
+
+      ws.onMessage(function(message) {
+        console.log( message.data );
+
+        var array = [];
+        array = message.data;
+
+        var str = "";
+
+        var result = "";
+        for (var i = 0; i < message.data.length; i++) {
+          result += String.fromCharCode(parseInt(array[i], 2));
+        }
+        // console.log( result )
+        $scope.output = result;
+      });
+    }
 });
+
+
+// app.controller("WSController", function ($http, $scope, $rootScope, $state, $websocket) {
+//     $scope.messages = [];
+//     var dataStream = $websocket('ws://localhost:8080/echo');
+//     dataStream.send('ping');  // send a message to the websocket server
+//     dataStream.onMessage(function (message) {
+//         console.log( message.data )
+//         $scope.messages.unshift(JSON.parse(message.data));
+// 		if ($scope.messages.length > 15)
+//             $scope.messages = $scope.messages.slice(0, 15);
+// 	});
+// });
 
 app.controller("DockerController", function ($http, $scope, $uibModal, $log, $rootScope, $state) {
     $scope.containers = [];
