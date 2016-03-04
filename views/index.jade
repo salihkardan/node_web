@@ -49,9 +49,10 @@ html
 
 		// Application Entry point	
 		script(src="/js/main.js")
+		script(src="/js/services.js") 
 		script(src="/js/controllers.js") 
-		script(src="/js/directives.js")   
-        
+		script(src="/js/directives.js")  
+		
 	body(ng-app="MyApp") 
 		nav.navbar.navbar-inverse
 			.container
@@ -59,20 +60,20 @@ html
 					a.navbar-brand(href="#") 
 						b SIEM
 				ul.nav.navbar-nav
-					li
+					li(ng-show="! $root.token")
 						a(href="#/login") 
 							i.fa.fa-cubes
 							b  Login       
-					li
+					li(ng-show="$root.token")
 						a(href="#/machines") 
 							i.fa.fa-cubes
 							b  Machines
-					li
+					li(ng-show="$root.token")
 						a(href="#/containers") 
 							i.fa.fa-cubes
 							b  Containers
 				ul.nav.navbar-nav.navbar-right
-					li
+					li(ng-show="$root.token")
 						a(href="#",ng-click="logout()")
 							i.fa.fa-sign-out
 							b  Logout

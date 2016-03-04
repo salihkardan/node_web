@@ -1,4 +1,4 @@
-var app = angular.module("MyApp", [
+	var app = angular.module("MyApp", [
 	'ui.router',
 	'ui.bootstrap',
   'angular-rickshaw',
@@ -38,6 +38,9 @@ app.config(function($stateProvider, $httpProvider) {
 			controller: "LoginController",
 		})
 
+		// HTTP Interceptor for config
+		$httpProvider.interceptors.push('APIInterceptor');
+
     //Enable cross domain calls
     $httpProvider.defaults.useXDomain = true;
     //Remove the header used to identify ajax call  that would prevent CORS from working
@@ -70,3 +73,39 @@ app.run(function($rootScope, $location, $state) {
 	// 		}
 	// 	});
 })
+
+app.factory('APIInterceptor', function($q, $rootScope) {
+	return {
+		// optional method
+		'request': function(config) {
+			// TODO: Check paths for api endpoints
+			// TODO: Check if login , not redirect to login
+			// TODO: Don't check token on login
+			// TODO: Not all 401s mean login required
+			if ($rootScope.token) {
+				config.headers['x-access-token'] = $rootScope.token;
+				// config.headers['Authorization'] = 'Bearer ' + $rootScope.token;
+			}
+			return config;
+		},
+
+		// optional method
+		'requestError': function(rejection) {
+			// do something on error
+			return $q.reject(rejection);
+		},
+
+
+		// optional method
+		'response': function(response) {
+			// do something on success
+			return response;
+		},
+
+		// optional method
+		'responseError': function(rejection) {
+			// do something on error
+			return $q.reject(rejection);
+		}
+	};
+});

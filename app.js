@@ -55,6 +55,7 @@ var docker = new Docker( {
 //   });
 // });
 //
+//
 // docker.createContainer(opts, function (err, container) {
 //   console.log(container)
 //   var containerId = container.id;
@@ -62,13 +63,13 @@ var docker = new Docker( {
 //     var url = "ws://localhost:2375/v1.22/containers/" + containerId + "/attach/ws?logs=1&stdin=1&stderr=1&stdout=1&stream=1";
 //     var ws = new WebSocket(url);
 //     ws.on("open", function() {
-//         ws.send('ls /home/');
+//         ws.send('ls /' + '\n');
 //         console.log("ok, open");
 //     });
 //
 //     ws.on("message", function(msg) {
 //         console.log("msg", msg);
-//         ws.send("ls /home")
+//         // ws.send('ls /' + '\n');
 //         // ws.send("apt-get update");
 //     });
 //
@@ -107,12 +108,8 @@ var expressWs = require('express-ws')(app);
 
 app.set('views', __dirname + '/views')
 app.set('view engine', 'jade')
-
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
-
-// app.use(express.bodyParser());
-// app.use(express.logger('dev'))
 app.use(morgan('dev'));
 app.set('superSecret', config.secret)
 app.use(stylus.middleware(
@@ -130,8 +127,6 @@ app.get('/', function (req, res) {
 app.post('/api/login', function (req, res) {
     var email = req.body.email;
     var pass = req.body.password;
-    // res.setHeader('Content-Type', 'application/json');
-
     User.findOne({ where: { username: email, password: pass } }).then(function (user) {
         if (user != null) {
             var token = jwt.sign({user: email}, app.get('superSecret'), { expiresIn: 360 });
@@ -205,23 +200,21 @@ apiRoutes.use(function(req, res, next) {
 	// check header or url parameters or post parameters for token
     var token = req.body.token || req.param('token') || req.headers['x-access-token'];
 
-    // decode token
+  // decode token
 	if (token) {
 		// verifies secret and checks exp
 		jwt.verify(token, app.get('superSecret'), function(err, decoded) {
             if (err) {
                 return res.status(400).json({ success: false, message: 'Failed to authenticate token.' });
-				// return res.status(400).json({ success: false, message: 'Failed to authenticate token.' });
 			} else {
 				// if everything is good, save to request for use in other routes
-                req.decoded = decoded;
-                console.log("decoded: " + decoded.exp);
+        req.decoded = decoded;
+        console.log("decoded: " + decoded.exp);
 				next();
 			}
 		});
 	} else {
-		// if there is no token
-		// return an error
+		// if there is no token return an error
 		return res.status(403).send({
 			success: false,
 			message: 'No token provided.'

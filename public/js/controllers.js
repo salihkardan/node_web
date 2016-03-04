@@ -19,11 +19,8 @@ app.controller("HelloController", function ($scope, $state) {
 
 
 app.controller("WSController", function ($http, $scope, $rootScope, $state, $websocket) {
-    var containerId = "dc1de059f524a919b12546af55e6df3b88dd95ca4d19cf79810837288b287b0d"
+    var containerId = "498da2d418a2"
     var url = "ws://localhost:2375/v1.22/containers/" + containerId + "/attach/ws?logs=1&stdin=1&stderr=1&stdout=1&stream=1";
-
-
-    ws://localhost:2375/v1.22/containers/" + containerId + "/attach/ws?logs=1&stdin=1&stderr=1&stdout=1&stream=1
     console.log(url)
     var ws = $websocket(url);
 
@@ -32,39 +29,17 @@ app.controller("WSController", function ($http, $scope, $rootScope, $state, $web
     });
 
     $scope.command = "ls "
-
     $scope.sendCommand = function() {
       var command = $scope.command + "\n";
-
-      var bytes = [];
-      for(var i = 0; i < command.length; i++) {
-          var char = command.charCodeAt(i);
-          bytes.push(char >>> 8);
-          bytes.push(char & 0xFF);
-      }
       console.log( "sending " + command );
       ws.send(command)
-      // ws.send(bytes);
-
-      setTimeout(function(){
-          //do what you need here
-      }, 2000);
-
 
       ws.onMessage(function(message) {
-        console.log( message.data );
-
+        console.log( message.data  )
         var array = [];
         array = message.data;
-
-        var str = "";
-
-        var result = "";
-        for (var i = 0; i < message.data.length; i++) {
-          result += String.fromCharCode(parseInt(array[i], 2));
-        }
-        // console.log( result )
-        $scope.output = result;
+        console.log (array);
+        $scope.output = String(array);
       });
     }
 });
@@ -82,22 +57,14 @@ app.controller("WSController", function ($http, $scope, $rootScope, $state, $web
 // 	});
 // });
 
-app.controller("DockerController", function ($http, $scope, $uibModal, $log, $rootScope, $state) {
+app.controller("DockerController", function ($http, $scope, $uibModal, $log, $rootScope, $state, ContainerService) {
     $scope.containers = [];
     if ($rootScope.token) {
-        $http.get("/api/containers", {
-            headers: {
-                "x-access-token": $rootScope.token
-            }
-        }).then(function success(resp) {
-            $scope.containers = resp.data;
-            $scope.error = false;
-        }, function error(resp) {
-            delete localStorage.token;
-            $rootScope.token = null;
-            $state.go("login");
-            $scope.errorMessage = true;
+        // use ContainerService to get all containers
+        ContainerService.getContainers().then(function(containers){
+          $scope.containers = containers;
         });
+
         $scope.animationsEnabled = true;
         $scope.container;
         $scope.open = function (Id) {
