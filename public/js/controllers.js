@@ -118,7 +118,7 @@ app.controller("LoginController", function ($scope, $http, $uibModal, $rootScope
         $scope.open = function (size) {
           var modalInstance = $uibModal.open({
             animation: $scope.animationsEnabled,
-            templateUrl: 'myModalContent.html',
+            templateUrl: 'partials/modals/signupModal.html',
             controller: 'ModalInstanceCtrl',
             resolve: {
               email: function () { return $scope.email; },
@@ -149,7 +149,6 @@ app.controller("LoginController", function ($scope, $http, $uibModal, $rootScope
 });
 
 app.controller('ModalInstanceCtrl', function ($scope, $uibModalInstance) {
-
   $scope.ok = function () {
     $uibModalInstance.close({'email':$scope.email, 'password':$scope.pw1, 'password_check': $scope.pw2});
   };
