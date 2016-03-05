@@ -46,38 +46,38 @@ var docker = new Docker( {
     // socketPath: '/var/run/docker.sock'
 });
 
-//
-// docker.listContainers(function (err, containers) {
-//   containers.forEach(function (containerInfo) {
-//     console.log( containerInfo );
-//     // docker.getContainer(container/Info.Id).stop();
-//     // docker.getContainer(containerInfo/.Id).remove();
-//   });
-// });
-//
-//
-// docker.createContainer(opts, function (err, container) {
-//   console.log(container)
-//   var containerId = container.id;
-//   container.start(function (err, result) {
-//     var url = "ws://localhost:2375/v1.22/containers/" + containerId + "/attach/ws?logs=1&stdin=1&stderr=1&stdout=1&stream=1";
-//     var ws = new WebSocket(url);
-//     ws.on("open", function() {
-//         ws.send('ls /' + '\n');
-//         console.log("ok, open");
-//     });
-//
-//     ws.on("message", function(msg) {
-//         console.log("msg", msg);
-//         // ws.send('ls /' + '\n');
-//         // ws.send("apt-get update");
-//     });
-//
-//     ws.on("error", function(msg) {
-//         console.log("error", msg);
-//     });
-//   });
-// });
+
+docker.listContainers(function (err, containers) {
+  containers.forEach(function (containerInfo) {
+    console.log( containerInfo );
+    // docker.getContainer(container/Info.Id).stop();
+    // docker.getContainer(containerInfo/.Id).remove();
+  });
+});
+
+
+docker.createContainer(opts, function (err, container) {
+  console.log(container)
+  var containerId = container.id;
+  container.start(function (err, result) {
+    var url = "ws://localhost:2375/v1.22/containers/" + containerId + "/attach/ws?logs=1&stdin=1&stderr=1&stdout=1&stream=1";
+    var ws = new WebSocket(url);
+    ws.on("open", function() {
+        ws.send('ls /' + '\n');
+        console.log("ok, open");
+    });
+
+    ws.on("message", function(msg) {
+        console.log("msg", msg);
+        // ws.send('ls /' + '\n');
+        // ws.send("apt-get update");
+    });
+
+    ws.on("error", function(msg) {
+        console.log("error", msg);
+    });
+  });
+});
 
 
 

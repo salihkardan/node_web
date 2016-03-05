@@ -2,14 +2,19 @@
 	.panel.panel-default
 		.panel-title Machines
 		.panel-body
-			table.table
-				tr
-					th Hostname
-					th IP
-					th Uptime
-					th Alerts
-				tr(ng-repeat="m in machines")
-					td {{ m.hostname }}
-					td {{ m.ip }}
-					td {{ m.uptime }}
-					td {{ m.incidents }}
+			.container.col-sm-4
+				table.table
+					tr
+						th Hostname
+						th IP
+					tr(ng-repeat="m in machines", ng-click="selectRow(m)")
+						td {{ m.hostname }}
+						td {{ m.ip }}
+			.container.col-sm-4(ng-show="selected")
+				table.table
+					tr
+						th Hostname
+						th IP
+					tr.animation(ng-repeat="m in machines2")
+						td {{ m.hostname }}
+						td {{ m.ip }}

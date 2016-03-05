@@ -2,7 +2,8 @@
 	'ui.router',
 	'ui.bootstrap',
   'angular-rickshaw',
-  'ngWebSocket'
+  'ngWebSocket',
+	'ngAnimate',
 ]);
 
 app.config(function($stateProvider, $httpProvider) {

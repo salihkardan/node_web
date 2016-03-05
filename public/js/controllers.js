@@ -3,13 +3,44 @@ var app = angular.module("MyApp");
 app.controller("MachinesController", function ($scope, $state, $rootScope) {
     if ($rootScope.token) {
         $scope.machines = [{
-            hostname: "demo-server1",
+            hostname: "demo",
             ip: "192.168.1.4",
-            uptime: "10 minutes",
+            uptime: "10 mins",
+            incidents: "4"
+        },
+        {
+            hostname: "demo2",
+            ip: "192.168.1.3",
+            uptime: "40 mins",
+            incidents: "4"
+        },
+        {
+            hostname: "demo3",
+            ip: "192.168.1.3",
+            uptime: "40 mins",
+            incidents: "4"
+        },
+        {
+            hostname: "demo4",
+            ip: "192.168.1.3",
+            uptime: "40 mins",
+            incidents: "4"
+        },
+        {
+            hostname: "demo5",
+            ip: "192.168.1.3",
+            uptime: "40 mins",
             incidents: "4"
         }];
     } else {
         $state.go("login");
+    }
+
+    $scope.selected = null;
+    $scope.machines2 = []
+    $scope.selectRow = function(machine){
+      $scope.selected = true;
+      $scope.machines2.push(machine)
     }
 });
 
