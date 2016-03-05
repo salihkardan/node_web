@@ -37,10 +37,18 @@ app.controller("MachinesController", function ($scope, $state, $rootScope) {
     }
 
     $scope.selected = null;
-    $scope.machines2 = []
+    $scope.machines2 = [];
     $scope.selectRow = function(machine){
       $scope.selected = true;
-      $scope.machines2.push(machine)
+      for (var i = 0; i < $scope.machines.length; i++) {
+        $scope.machines2.push($scope.machines[i])
+      }
+    }
+    $scope.clear = function(){
+      for (var i = 0; i < $scope.machines.length; i++) {
+        $scope.machines2.pop();
+      }
+      $scope.selected = false;
     }
 });
 
