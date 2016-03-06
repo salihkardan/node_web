@@ -1,0 +1,14 @@
+.container
+	.panel.panel-default
+		.panel-title Books
+		.panel-body
+			.container.col-sm-12
+				table.table
+					tr
+						th Username
+						th BookName 
+						th Author
+					tr(ng-repeat="b in books")
+						td {{ b.username }}
+						td {{ b.name }} 
+						td {{ b.author }}

@@ -13,9 +13,7 @@
 			.container.col-sm-4(ng-show="selected")
 				table.table
 					tr
-						th Hostname
-						th IP
-					tr.animation(ng-repeat="m in machines2")
-						td {{ m.hostname }}
-						td {{ m.ip }}
+						th Book Name
+					tr.animation(ng-repeat="b in books")
+						td {{ b.name }}
 				button.form-control.btn-success(ng-click="clear()") Clear

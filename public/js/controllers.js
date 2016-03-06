@@ -1,6 +1,6 @@
 var app = angular.module("MyApp");
 
-app.controller("MachinesController", function ($scope, $state, $rootScope) {
+app.controller("MachinesController", function ($scope, $state, $rootScope, BookService) {
     if ($rootScope.token) {
         $scope.machines = [{
             hostname: "demo",
@@ -37,19 +37,28 @@ app.controller("MachinesController", function ($scope, $state, $rootScope) {
     }
 
     $scope.selected = null;
-    $scope.machines2 = [];
+    $scope.books = [];
     $scope.selectRow = function(machine){
       $scope.selected = true;
-      for (var i = 0; i < $scope.machines.length; i++) {
-        $scope.machines2.push($scope.machines[i])
-      }
+      BookService.getBooks().then(function(books){
+        console.log( books )
+        $scope.books = books;
+      });
     }
     $scope.clear = function(){
-      for (var i = 0; i < $scope.machines.length; i++) {
-        $scope.machines2.pop();
+      for (var i = 0; i < $scope.books.length; i++) {
+        $scope.books.pop();
       }
       $scope.selected = false;
     }
+});
+
+
+app.controller("BooksController", function ($scope, $state, BookService) {
+    $scope.books = [];
+    BookService.getBooks().then(function(books){
+      $scope.books   = books;
+    });
 });
 
 app.controller("HelloController", function ($scope, $state) {

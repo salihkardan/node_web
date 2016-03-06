@@ -13,6 +13,11 @@ app.config(function($stateProvider, $httpProvider) {
 			templateUrl: "partials/machines.html",
 			controller: "MachinesController",
     })
+		.state('books', {
+			url: "/books",
+			templateUrl: "partials/books.html",
+			controller: "BooksController",
+    })
     .state('ws', {
 			url: "/ws",
 			templateUrl: "partials/websocket.html",

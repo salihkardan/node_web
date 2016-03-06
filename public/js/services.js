@@ -8,3 +8,13 @@ app.service('ContainerService', function($http, $log) {
       });
   };
 });
+
+
+app.service('BookService', function($http, $log) {
+  this.getBooks = function() {
+      return $http.get("/api/books").then(function(response) {
+        // $log.info( response );
+        return response.data;
+      });
+  };
+});
