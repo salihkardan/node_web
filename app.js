@@ -231,15 +231,18 @@ apiRoutes.get('/containers', function (req, res) {
 
 apiRoutes.get('/books', function (req, res) {
     var books = `
-    [{
+    [
+      {
       	"username": "salihkardan@gmail.com",
       	"name": "Engineering",
       	"author": "Salih"
-      }, {
+      },
+      {
       	"username": "ali@gmail.com",
       	"name": "Biology",
       	"author": "Ahmet"
-    }]
+      }
+    ]
     `
     res.setHeader('Content-Type', 'application/json');
     res.json(JSON.parse(books));

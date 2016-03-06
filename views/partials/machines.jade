@@ -16,4 +16,15 @@
 						th Book Name
 					tr.animation(ng-repeat="b in books")
 						td {{ b.name }}
-				button.form-control.btn-success(ng-click="clear()") Clear
+				button.form-control.btn-success(ng-click="clear()") Clear 
+			.container.col-sm-4
+				table.table
+					tr
+						th Book Name
+						th Selected
+					tr.animation(ng-repeat="b in books")
+						td {{ b.name }}
+						td 
+							pretty-checkbox.clearfix(value="true", ng-model='myModel.myRadio')
+				p Values: {{myModel.myRadio}}
+				button.form-control.btn-success(ng-click="add()") Clear 

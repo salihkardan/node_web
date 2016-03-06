@@ -41,16 +41,15 @@ app.controller("MachinesController", function ($scope, $state, $rootScope, BookS
     $scope.selectRow = function(machine){
       $scope.selected = true;
       BookService.getBooks().then(function(books){
-        console.log( books )
         $scope.books = books;
       });
     }
     $scope.clear = function(){
-      for (var i = 0; i < $scope.books.length; i++) {
-        $scope.books.pop();
-      }
       $scope.selected = false;
     }
+    $scope.myModel = {
+      myRadio : true
+    };
 });
 
 

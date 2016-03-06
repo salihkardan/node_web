@@ -4,6 +4,7 @@
   'angular-rickshaw',
   'ngWebSocket',
 	'ngAnimate',
+	'pretty-checkable'
 ]);
 
 app.config(function($stateProvider, $httpProvider) {
