@@ -1,6 +1,6 @@
 var app = angular.module("MyApp");
 
-app.controller("MachinesController", function ($scope, $state, $rootScope, BookService) {
+app.controller("MachinesController", function ($scope, $state, $rootScope, $http, BookService) {
     if ($rootScope.token) {
         $scope.machines = [{
             hostname: "demo",
@@ -50,6 +50,14 @@ app.controller("MachinesController", function ($scope, $state, $rootScope, BookS
     $scope.myModel = {
       myRadio : true
     };
+});
+
+
+app.controller("HotelController", function ($scope, $state, HotelService) {
+    $scope.hotels = [];
+    HotelService.getHotels().then(function(hotels){
+      $scope.hotels = hotels;
+    });
 });
 
 

@@ -16,6 +16,8 @@ var express = require('express'),
 var WebSocket = require('ws');
 var WebSocketServer = require('websocket').server;
 
+var Promise = require('promise');
+
 
 
 var sequelize = new Sequelize(config.database, config.username, config.password, {
@@ -56,28 +58,28 @@ docker.listContainers(function (err, containers) {
 });
 
 
-docker.createContainer(opts, function (err, container) {
-  console.log(container)
-  var containerId = container.id;
-  container.start(function (err, result) {
-    var url = "ws://localhost:2375/v1.22/containers/" + containerId + "/attach/ws?logs=1&stdin=1&stderr=1&stdout=1&stream=1";
-    var ws = new WebSocket(url);
-    ws.on("open", function() {
-        ws.send('ls /' + '\n');
-        console.log("ok, open");
-    });
-
-    ws.on("message", function(msg) {
-        console.log("msg", msg);
-        // ws.send('ls /' + '\n');
-        // ws.send("apt-get update");
-    });
-
-    ws.on("error", function(msg) {
-        console.log("error", msg);
-    });
-  });
-});
+// docker.createContainer(opts, function (err, container) {
+//   console.log(container)
+//   var containerId = container.id;
+//   container.start(function (err, result) {
+//     var url = "ws://localhost:2375/v1.22/containers/" + containerId + "/attach/ws?logs=1&stdin=1&stderr=1&stdout=1&stream=1";
+//     var ws = new WebSocket(url);
+//     ws.on("open", function() {
+//         ws.send('ls /' + '\n');
+//         console.log("ok, open");
+//     });
+//
+//     ws.on("message", function(msg) {
+//         console.log("msg", msg);
+//         // ws.send('ls /' + '\n');
+//         // ws.send("apt-get update");
+//     });
+//
+//     ws.on("error", function(msg) {
+//         console.log("error", msg);
+//     });
+//   });
+// });
 
 
 
@@ -256,5 +258,5 @@ apiRoutes.get('/container', function (req, res) {
 
 app.use('/api', apiRoutes);
 
-app.listen(8080);
-console.log('Server running at http://localhost:' + 8080);
+app.listen(5000);
+console.log('Server running at http://localhost:' + 5000);

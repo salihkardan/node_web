@@ -10,6 +10,15 @@ app.service('ContainerService', function($http, $log) {
 });
 
 
+app.service('HotelService', function($http, $log) {
+  this.getHotels = function() {
+      return $http.get("/service/authenticate/getHotels").
+        then(function(response) {
+          return response.data;
+        });
+  };
+});
+
 app.service('BookService', function($http, $log) {
   this.getBooks = function() {
       return $http.get("/api/books").then(function(response) {

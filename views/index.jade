@@ -77,6 +77,10 @@ html
 						a(href="#/containers") 
 							i.fa.fa-cubes
 							b  Containers
+					li(ng-show="$root.token")
+						a(href="#/hotels") 
+							i.fa.fa-bed
+							b  Hotels
 				ul.nav.navbar-nav.navbar-right
 					li(ng-show="$root.token")
 						a(href="#",ng-click="logout()")

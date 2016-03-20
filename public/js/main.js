@@ -24,6 +24,11 @@ app.config(function($stateProvider, $httpProvider) {
 			templateUrl: "partials/websocket.html",
 			controller: "WSController",
     })
+		.state('hotels', {
+			url: "/hotels",
+			templateUrl: "partials/hotels.html",
+			controller: "HotelController",
+		})
     .state('hello', {
 			url: "/hello",
 			templateUrl: "partials/hello.html",
@@ -85,12 +90,18 @@ app.factory('APIInterceptor', function($q, $rootScope) {
 	return {
 		// optional method
 		'request': function(config) {
+
+			var url = config.url;
+			if (url.indexOf('/service') != -1 || url.indexOf('/service/authenticate') != -1) {
+				config.url = "http://localhost:8080" + url;
+			}
+
 			// TODO: Check paths for api endpoints
 			// TODO: Check if login , not redirect to login
 			// TODO: Don't check token on login
 			// TODO: Not all 401s mean login required
 			if ($rootScope.token) {
-				config.headers['x-access-token'] = $rootScope.token;
+				// config.headers['x-access-token'] = $rootScope.token;
 				// config.headers['Authorization'] = 'Bearer ' + $rootScope.token;
 			}
 			return config;

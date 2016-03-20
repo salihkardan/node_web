@@ -1,0 +1,12 @@
+.container
+	.panel.panel-default
+		.panel-title Hotels
+		.panel-body
+			.container.col-sm-4
+				table.table
+					tr
+						th Id
+						th Name
+					tr(ng-repeat="h in hotels")
+						td {{ h.id }}
+						td {{ h.name }}
